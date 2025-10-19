@@ -30,3 +30,7 @@ gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
 `
 
+firebase functions:secrets:set DP_PROJECT_01_API_KEY
+firebase functions:secrets:get DP_PROJECT_01_API_KEY
+echo -n "VALOR_DEL_SECRETO" | firebase functions:secrets:set DP_PROJECT_01_API_KEY
+
