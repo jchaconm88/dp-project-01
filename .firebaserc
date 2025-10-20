@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "dp-project-01-374f0"
-  }
+    "default": "dp-project-01-374f0",
+    "qa": "dp-project-q01",
+    "prd": "dp-project-p01"
+  },
+  "targets": {},
+  "etags": {}
 }
