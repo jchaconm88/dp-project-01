@@ -110,3 +110,5 @@ node_modules/
 /web-app/.DS_Store
 /web-app/Thumbs.db
 
+# env
+/web-app/src/enviroments/environment*.ts
