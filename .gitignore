@@ -111,4 +111,4 @@ node_modules/
 /web-app/Thumbs.db
 
 # env
-/web-app/src/enviroments/environment*.ts
+/web-app/src/environments/environment*.ts
