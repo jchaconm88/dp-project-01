@@ -1,0 +1,75 @@
+<!--BEGIN TABLE-->
+<div class="table-content">
+    <div class="table-boody">
+      <table class="table-mt" mat-table [dataSource]="dataSource" matSort>
+        <!--BEGIN PROP COLUMNS-->
+        <ng-container [matColumnDef]="tableCol.column" *ngFor="let tableCol of tableColumns">
+          <ng-container [ngSwitch]="tableCol.column">
+            <!-- DETALLES PERSONALIZADOS -->
+            <ng-container *ngFor="let column of columns">
+              <ng-container *ngSwitchCase="column.name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{tableCol.header}} </th>
+                <td mat-cell *matCellDef="let element">
+                  <ng-container *ngTemplateOutlet="column.template || null; context: { $implicit: element, label: getValue(element, tableCol.column, tableCol.type) }">
+                  </ng-container>
+                </td>
+              </ng-container>
+            </ng-container>
+            <!-- CHECK -->
+            <ng-container *ngSwitchCase="'select'">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                              [checked]="selectedCols.hasValue() && isAllSelected()"
+                              [indeterminate]="selectedCols.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? selectedCols.toggle(row) : null"
+                              [checked]="selectedCols.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+            <!-- COLUMN LINK -->
+            <ng-container *ngSwitchCase="linkColumn">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{tableCol.header}} </th>
+              <td mat-cell *matCellDef="let element"><a (click)="editHandler(element.id)"> {{getValue(element, tableCol.column, tableCol.type)}} </a></td>
+           </ng-container>
+           <!-- COLUMNS -->
+            <ng-container *ngSwitchDefault>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{tableCol.header}} </th>
+              <td mat-cell *matCellDef="let element"> {{getValue(element, tableCol.column, tableCol.type)}} </td>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <!--END PROP COLUMNS-->
+        <!--BEGIN OPTION COLUMN-->
+        <ng-container matColumnDef="options" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element" class="group-options-md">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Opciones">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="editHandler(element.id)">
+                <mat-icon>build</mat-icon>
+                <span>Modificar</span>
+              </button>
+              <button mat-menu-item (click)="deleteHandler(element)">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <!--END OPTION COLUMN-->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <!--END TABLE-->
+    </div>
+    <!--BEGIN PAGINATOR-->
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+    <!--END PAGINATOR-->
+  </div>
+  <!--END TABLE-->

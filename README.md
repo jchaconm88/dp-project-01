@@ -44,3 +44,6 @@ firebase use --add
 
 ## Usar entornos (qa y pprd)
 firebase use qa
+
+## Instalar Angular
+npm install -g @angular/cli

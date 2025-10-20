@@ -1,0 +1,30 @@
+@import './themes';
+
+@mixin nb-overrides() {
+    .mat-mdc-table {
+        background-color: nb-theme(card-background-color) !important;
+        color: nb-theme(card-text-color) !important;
+    }
+
+    .mat-mdc-cell,
+    .mat-mdc-header-cell {
+        font-family: nb-theme(smart-table-font-family) !important;
+        font-size: nb-theme(smart-table-font-size) !important;
+        font-weight: nb-theme(smart-table-font-weight) !important;
+        line-height: nb-theme(-font-weight-line-height) !important;
+        background-color: nb-theme(card-background-color) !important;
+        color: nb-theme(smart-table-fg) !important;
+    }
+
+    .mat-mdc-paginator,
+    .mat-mdc-menu-trigger {
+        background-color: nb-theme(card-background-color) !important;
+        color: nb-theme(card-text-color) !important;
+        font-family: nb-theme(smart-table-font-family) !important;
+    }
+
+    .mdc-checkbox {
+        // background-color: var(--checkbox-basic-background-color);
+        color: var(--checkbox-basic-border-color);
+    }
+}

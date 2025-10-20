@@ -67,3 +67,45 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Angular
+# Compiled output
+/web-app/dist
+/web-app/tmp
+/web-app/out-tsc
+/web-app/bazel-out
+
+# Node
+/web-app/node_modules
+/web-app/npm-debug.log
+/web-app/yarn-error.log
+
+# IDEs and editors
+/web-app.idea/
+/web-app.project
+/web-app.classpath
+/web-app.c9/
+/web-app/*.launch
+/web-app/.settings/
+/web-app/*.sublime-workspace
+
+# Visual Studio Code
+/web-app/.vscode/*
+/web-app/!.vscode/settings.json
+/web-app/!.vscode/tasks.json
+/web-app/!.vscode/launch.json
+/web-app/!.vscode/extensions.json
+/web-app/.history/*
+
+# Miscellaneous
+/web-app/.angular/cache
+/web-app/.sass-cache/
+/web-app/connect.lock
+/web-app/coverage
+/web-app/libpeerconnection.log
+/web-app/testem.log
+/web-app/typings
+
+# System files
+/web-app/.DS_Store
+/web-app/Thumbs.db
