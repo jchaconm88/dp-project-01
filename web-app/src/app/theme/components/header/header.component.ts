@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { NbActionsModule, NbContextMenuModule, NbIconModule, NbLayoutModule, NbMediaBreakpointsService, NbMenuService, NbSearchModule, NbSelectModule, NbSidebarService, NbThemeService, NbUserModule } from '@nebular/theme';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NbActionsModule, NbButtonModule, NbContextMenuModule, NbIconModule, NbLayoutModule, NbMediaBreakpointsService, NbMenuService, NbSearchModule, NbSelectModule, NbSidebarService, NbThemeService, NbUserModule } from '@nebular/theme';
 import { NbAuthJWTToken, NbAuthService, NbAuthToken } from '@nebular/auth';
 import firebase from 'firebase/compat/app';
 import { filter, map, Subject, takeUntil } from 'rxjs';
@@ -16,12 +16,14 @@ import { Router } from '@angular/router';
     NbIconModule,
     NbSearchModule,
     NbUserModule,
-    NbContextMenuModule
+    NbContextMenuModule,
+    NbButtonModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   private router = inject(Router)
   private nbMenuService = inject(NbMenuService)
   private themeService = inject(NbThemeService);
@@ -29,9 +31,9 @@ export class HeaderComponent {
   private breakpointService = inject(NbMediaBreakpointsService)
   private sidebarService = inject(NbSidebarService)
   private menuService = inject(NbMenuService)
-  private destroy$: Subject<void> = new Subject<void>();
   user: firebase.User | null = null;
   userPictureOnly: boolean = false;
+  private hasReloaded = false;
 
   themes = [
     {
@@ -55,12 +57,14 @@ export class HeaderComponent {
   userMenu = [ { title: 'Profile' }, { title: 'Cerrar sesión' } ];
 
   ngOnInit() {
+    console.log('ngOnInit ejecutado');
     this.currentTheme = this.themeService.currentTheme;
 
     this.nbMenuService.onItemClick()
       .pipe(
         filter(({ tag }) => tag === 'user-menu'), // Filtra por el tag del menú
         map(({ item }) => item),
+        takeUntil(this.destroy$)
       )
       .subscribe((item) => {
         if (item.title === 'Cerrar sesión') {
@@ -139,12 +143,26 @@ export class HeaderComponent {
     return false;
   }
 
+  login() {
+    this.router.navigate(['/auth/login'], { replaceUrl: true })
+  }
+
   private logout() {
     console.log('logout')
     this.authService.logout('firebase') // 'email' debe coincidir con el nombre de tu estrategia
       .subscribe({
         next: () => {
-          this.router.navigate(['/auth/login'], { replaceUrl: true });
+          this.navigateHome()          
+          
+          // const currentUrl = this.router.url.split('?')[0];
+          // if (currentUrl === '/' || currentUrl === '') {
+          //   this.router
+          //     .navigateByUrl('/auth/login', { skipLocationChange: true }) // navega "fuera" sin cambiar la URL
+          //     .then(() => this.router.navigate(['/'])); // vuelve a la raíz
+          // } else {
+          //   // Si no estás en la raíz, simplemente navega
+          //   this.router.navigate(['/']);
+          // }
         },
         error: (err) => {
           console.error('Error al cerrar sesión:', err);

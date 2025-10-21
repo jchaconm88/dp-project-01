@@ -17,7 +17,7 @@ import { NbFirebasePasswordStrategy } from '@nebular/firebase-auth';
 import { provideHttpClient } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire/compat';
 import { LoginComponent } from './theme/components/login/login.component';
-import { distinctUntilChanged, Observable, of as observableOf, startWith, tap } from 'rxjs';
+import { distinctUntilChanged, Observable, of as observableOf, shareReplay, startWith, tap } from 'rxjs';
 import { RoleService } from './core/services/role.service';
 import { RegisterComponent } from './theme/components/register/register.component';
 import { AppAccessChecker } from './core/services/access.checker';
@@ -32,7 +32,8 @@ export class NbSimpleRoleProvider extends NbRoleProvider {
   }
   getRole(): Observable<string> {
     return this.roleService.getRole().pipe(
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      shareReplay(1)
     );
   }
 }
@@ -71,6 +72,10 @@ export const appConfig: ApplicationConfig = {
           }),
         ],
         forms: {
+          logout: {
+            redirectDelay: 0,
+            redirect: { success: null, failure: null }, // 👈 sin redirección automática
+          },
           login: {
             strategy: 'firebase',
             component: LoginComponent,

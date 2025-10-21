@@ -2,12 +2,11 @@ import { FirebaseMenuItem } from "../core/interfaces/firebase-menu-item";
 
 export const MENU_ITEMS: FirebaseMenuItem[] = [
     {
-      title: 'E-commerce',
+      title: 'Inicio',
       enabled: true,
       icon: 'shopping-cart-outline',
-      link: '/pages/dashboard',
-      home: true,
-      permission: ['view', 'user']
+      link: '/home',
+      home: true
     },
     {
       title: 'IoT Dashboard',
@@ -29,6 +28,7 @@ export const MENU_ITEMS: FirebaseMenuItem[] = [
         {
           title: 'Usuarios',
           link: '/system/user',
+          permission: ['view', 'user']
         },
         {
           title: 'List',

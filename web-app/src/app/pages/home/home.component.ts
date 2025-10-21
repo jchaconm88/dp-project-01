@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NbActionsModule, NbButtonModule, NbCardModule, NbIconModule } from '@nebular/theme';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Firestore, collectionData, collection } from '@angular/fire/firestore';
 import { NbSecurityModule } from '@nebular/security';
 import { TableComponent } from '../../theme/controls/table/table.component';
@@ -22,7 +22,7 @@ import { TableModule } from 'primeng/table';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   private firestore = inject(Firestore);
   private auth = inject(Auth);
   tableDef: AppTableDefDetail[]  = [
@@ -30,14 +30,22 @@ export class HomeComponent {
     { header: 'Descripción', column: 'description', order: 2, display: true, filter: true }
   ]
   showSelect: boolean = true
+  private usersSub?: Subscription
 
   products: any[] = []
   selectedProducts: any[] = []
 
   constructor() {
-    this.getUsers().subscribe(users => {
+  }
+
+  ngOnInit(): void {
+    this.usersSub = this.getUsers().subscribe(users => {
       console.log('Usuarios desde Firestore:', users);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.usersSub?.unsubscribe();
   }
 
   async toggleShuffle(){

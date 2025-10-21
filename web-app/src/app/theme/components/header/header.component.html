@@ -19,9 +19,13 @@
       <nb-action class="control-item" icon="email-outline"></nb-action>
       <nb-action class="control-item" icon="bell-outline"></nb-action>
       <nb-action class="user-action">
+        @if (user) {
         <nb-user [nbContextMenu]="userMenu" nbContextMenuTag="user-menu" [onlyPicture]="userPictureOnly"
-          [name]="user?.email || 'Usuario'" [picture]="user?.photoURL || 'images/default-avatar.png'">
+          [name]="user.email || 'Usuario'" [picture]="user.photoURL || 'images/default-avatar.png'">
         </nb-user>
+        } @else {
+        <button nbButton (click)="login()">Iniciar Sesión</button>
+        }        
       </nb-action>
       </nb-actions>
   </div>

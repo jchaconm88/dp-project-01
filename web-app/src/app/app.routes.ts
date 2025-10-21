@@ -6,7 +6,6 @@ import { RegisterComponent } from './theme/components/register/register.componen
 
 export const routes: Routes = [
     { path: '', 
-      canActivate: [AuthGuard],
       loadChildren: () => import('./pages/pages.routes').then(m => m.AUTH_ROUTES) }, 
     {
         path: 'auth',

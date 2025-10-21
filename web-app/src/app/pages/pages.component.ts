@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DefaultLayoutComponent } from '../theme/layout/default/default.layout';
 import { NbMenuItem, NbMenuModule, NbIconModule } from '@nebular/theme';
 import { RouterOutlet } from '@angular/router';
 import { NbAccessChecker, NbRoleProvider } from '@nebular/security';
-import { filter, firstValueFrom, forkJoin, map, Observable, of, take, timeout } from 'rxjs';
+import { catchError, distinctUntilChanged, filter, firstValueFrom, forkJoin, map, Observable, of, Subject, take, takeUntil, timeout } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FirebaseMenuItem } from '../core/interfaces/firebase-menu-item';
 import { RoleService } from '../core/services/role.service';
@@ -28,33 +28,66 @@ import { MENU_ITEMS } from './pages-menu';
   `,
 })
 
-export class PagesComponent implements OnInit {
+export class PagesComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   menuItems: NbMenuItem[] = [];
   constructor(private authService: NbAuthService, private accessChecker: NbAccessChecker, private roleProvider: NbRoleProvider, private roleService: RoleService) { }
 
   async ngOnInit() {
     try {
+      this.roleProvider.getRole()
+        .pipe(
+          distinctUntilChanged(),
+          filter(role => !!role),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(async role => {
+          console.log('Rol detectado:', role);
+          // Filtra primero los items habilitados
+          const enabledItems = MENU_ITEMS.filter(item => item.enabled);
+
+          // Mapea asyncronamente cada item
+          this.menuItems = await Promise.all(
+            enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
+          );
+        });
+
+
       // 1. Espera a que el rol esté completamente cargado
       //await this.roleService.waitForRoleLoad();
+
+      // if (await firstValueFrom(this.roleProvider.getRole())) {
+      //   console.log('Current role:', await firstValueFrom(this.roleProvider.getRole()));
+      // }
         
-      await firstValueFrom(
-        this.roleProvider.getRole().pipe(
-          filter(role => role !== 'guest'), // Ignora el estado inicial
-          take(1),
-          timeout(5000)
-      ))
+      // await firstValueFrom(
+      //   this.roleProvider.getRole().pipe(
+      //     filter(role => role !== 'guest'), // Ignora el estado inicial
+      //     take(1),
+      //     timeout(5000),
+      //     catchError(() => of('guest'))
+      // ))
 
-      // Filtra primero los items habilitados
-      const enabledItems = MENU_ITEMS.filter(item => item.enabled);
+      // if (await firstValueFrom(this.roleProvider.getRole())) {
+      //   console.log('Current role:', await firstValueFrom(this.roleProvider.getRole()));
+      // }
+        
+      // // Filtra primero los items habilitados
+      // const enabledItems = MENU_ITEMS.filter(item => item.enabled);
 
-      // Mapea asyncronamente cada item
-      this.menuItems = await Promise.all(
-        enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
-      );
+      // // Mapea asyncronamente cada item
+      // this.menuItems = await Promise.all(
+      //   enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
+      // );
     } catch (error) {
       console.error('Error loading menu:', error);
       this.menuItems = []; // Asigna un array vacío en caso de error
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private async mapFirebaseItemToNbMenuItem(firebaseItem: FirebaseMenuItem): Promise<NbMenuItem> {

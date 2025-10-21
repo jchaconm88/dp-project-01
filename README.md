@@ -47,3 +47,6 @@ firebase use qa
 
 ## Instalar Angular
 npm install -g @angular/cli
+
+## Deploy Hosting
+firebase deploy --only hosting
