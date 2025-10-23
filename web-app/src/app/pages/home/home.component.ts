@@ -23,8 +23,8 @@ import { TableModule } from 'primeng/table';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  private firestore = inject(Firestore);
-  private auth = inject(Auth);
+  //private firestore = inject(Firestore);
+  //private auth = inject(Auth);
   tableDef: AppTableDefDetail[]  = [
     { header: 'Nombre', column: 'name', order: 1, display: true, filter: true },
     { header: 'Descripción', column: 'description', order: 2, display: true, filter: true }
@@ -39,24 +39,24 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.usersSub = this.getUsers().subscribe(users => {
-      console.log('Usuarios desde Firestore:', users);
-    });
+    // this.usersSub = this.getUsers().subscribe(users => {
+    //   console.log('Usuarios desde Firestore:', users);
+    // });
   }
 
   ngOnDestroy(): void {
-    this.usersSub?.unsubscribe();
+    //this.usersSub?.unsubscribe();
   }
 
   async toggleShuffle(){
-    const result = await signInWithEmailAndPassword(this.auth, 'fchacong@outlook.com', 'Jo@quin88_');
-      console.log('Login exitoso', result.user);
+    // const result = await signInWithEmailAndPassword(this.auth, 'fchacong@outlook.com', 'Jo@quin88_');
+    //   console.log('Login exitoso', result.user);
   }
 
-  getUsers(): Observable<any[]> {
-    const usersCollection = collection(this.firestore, 'users');
-    return collectionData(usersCollection, { idField: 'id' });
-  }
+  // getUsers(): Observable<any[]> {
+  //   const usersCollection = collection(this.firestore, 'users');
+  //   return collectionData(usersCollection, { idField: 'id' });
+  // }
   
   edit(appRoleId: string): void {
     

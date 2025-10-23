@@ -5,6 +5,8 @@ import firebase from 'firebase/compat/app';
 import { filter, map, Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'ngx-header',
@@ -28,10 +30,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private nbMenuService = inject(NbMenuService)
   private themeService = inject(NbThemeService);
   private authService = inject(NbAuthService);
+  private authAppService = inject(AuthService);
   private breakpointService = inject(NbMediaBreakpointsService)
   private sidebarService = inject(NbSidebarService)
   private menuService = inject(NbMenuService)
-  user: firebase.User | null = null;
+  private userService = inject(UserService);
+  //user: any;
+  user$ = this.userService.user$;
   userPictureOnly: boolean = false;
   private hasReloaded = false;
 
@@ -72,14 +77,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
       });
     
-    this.authService.onTokenChange() // Escucha cambios en el token
-      .pipe(
-        filter((token: NbAuthToken): token is NbAuthJWTToken => token instanceof NbAuthJWTToken),
-        filter((token: NbAuthJWTToken) => token.isValid())
-      )
-      .subscribe((token: NbAuthJWTToken) => {
-        this.user = token.getPayload(); // Extrae datos del payload del token
-      });
+    // this.authService.onTokenChange() // Escucha cambios en el token
+    //   .pipe(
+    //     filter((token: NbAuthToken): token is NbAuthJWTToken => token instanceof NbAuthJWTToken),
+    //     filter((token: NbAuthJWTToken) => token.isValid()),
+    //     takeUntil(this.destroy$)
+    //   )
+    //   .subscribe(async (token: NbAuthJWTToken) => {
+    //     const payload = token.getPayload();
+    //     const user = await this.authAppService.userGetByEmail(payload.email)
+    //     this.user = {
+    //       id: payload.user_id,
+    //       email: payload.email,
+    //       displayName: user?.displayName
+    //     };
+    //   });
 
     // this.authService.onTokenChange().subscribe(token => {
     //     if (token.isValid()) {
@@ -144,7 +156,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    this.router.navigate(['/auth/login'], { replaceUrl: true })
+    this.router.navigate(['/auth/login'])
   }
 
   private logout() {

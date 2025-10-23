@@ -57,7 +57,7 @@ export class UserComponent implements OnInit {
   showSelect: boolean = true
   
   constructor() {
-    this.load();
+    //this.load();
     // effect(() => {
     //   // let _users = this.systemService.users();
     //   // this.users = _users;
@@ -67,7 +67,7 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.load();
+    this.load();
   }
 
   load() {
@@ -81,6 +81,7 @@ export class UserComponent implements OnInit {
       // });
       this.systemService.userGetList().subscribe(users => {
         //this.users.update(users)
+        console.log('Usuarios cargados:', users);
         this.table.setDatasource(users)
       });
 

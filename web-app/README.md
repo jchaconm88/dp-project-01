@@ -67,4 +67,5 @@ ng g c pages/home --project app-layout --style scss --skip-tests=true
 ng g c pages/system/user --project app-layout --style scss --skip-tests=true
 
 ng g s core/services/system --project app-layout --skip-tests=true
+ng g s core/services/auth --project app-layout --skip-tests=true
 ng g s core/services/firebase --project app-layout --skip-tests=true

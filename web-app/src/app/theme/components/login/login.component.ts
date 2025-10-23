@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { getDeepFromObject, NB_AUTH_OPTIONS, NbAuthResult, NbAuthService, NbAuthSocialLink } from '@nebular/auth';
@@ -20,7 +20,7 @@ import { NbAlertModule, NbButtonModule, NbCheckboxModule, NbIconModule, NbInputM
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   redirectDelay: number = 0;
   showMessages: any = {};
@@ -43,6 +43,9 @@ export class LoginComponent {
     this.strategy = this.getConfigValue('forms.login.strategy');
     this.socialLinks = this.getConfigValue('forms.login.socialLinks');
     this.rememberMe = this.getConfigValue('forms.login.rememberMe');
+  }
+  ngOnInit(): void {
+    console.log('LoginComponent initialized');
   }
 
   login(): void {
