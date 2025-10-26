@@ -1,5 +1,7 @@
-<dp-content title="Usuarios">
-    <dp-table [tableDef]="tableDef" linkColumn="documentNo" [showSelect]="showSelect" (onEdit)="edit($event)"
+<dp-content title="USUARIOS">
+  <dp-content-header (onFilter)="table.filter($event)" (onLoad)="load()" (onCreate)="create()">
+  </dp-content-header>
+    <dp-table [tableDef]="tableDef" linkColumn="displayName" [showSelect]="showSelect" (onEdit)="edit($event)"
       (onDelete)="delete($event)">
     </dp-table>
 </dp-content>

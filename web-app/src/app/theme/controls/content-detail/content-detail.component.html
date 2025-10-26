@@ -1,0 +1,19 @@
+<nb-card>
+  <nb-card-header>
+    <div>
+    <button nbButton ghost status="primary" (click)="goBack()">
+        <nb-icon size="large" icon="arrow-back-outline"></nb-icon>
+    </button>
+    {{title}}
+    </div>
+    <div>
+      <button nbButton (click)="goBack()">
+        Eliminar
+    </button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng-content></ng-content>
+  </nb-card-body>
+</nb-card>

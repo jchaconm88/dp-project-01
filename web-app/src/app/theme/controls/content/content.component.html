@@ -4,6 +4,8 @@
   </nb-card-header>
 
   <nb-card-body>
+    <nb-alert *ngIf="showAlert" accent="danger" closable (close)="onClose()">Danger. You have been successfully authenticated!</nb-alert>
+    
     <ng-content></ng-content>
   </nb-card-body>
 </nb-card>

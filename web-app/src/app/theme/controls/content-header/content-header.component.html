@@ -1,0 +1,20 @@
+<div class="content-header">
+  <ng-container *ngIf="showFilter">
+    <nb-form-field>
+        <nb-icon nbPrefix icon="search-outline" pack="eva"></nb-icon>
+        <input type="text" nbInput (keyup)="filterHandler($event)">
+    </nb-form-field>
+  </ng-container>
+  <!--END FILTER-->
+  <div class="content-header-options">
+    <button nbButton (click)="loadHandler()">
+        <nb-icon icon="refresh-outline"></nb-icon>
+    </button>
+    <button nbButton (click)="deleteHandler()">
+        Eliminar
+    </button>
+    <button nbButton (click)="createHandler()">
+        Agregar
+    </button>
+  </div>
+</div>

@@ -76,43 +76,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.logout(); // Ejecuta logout al hacer clic
         }
       });
-    
-    // this.authService.onTokenChange() // Escucha cambios en el token
-    //   .pipe(
-    //     filter((token: NbAuthToken): token is NbAuthJWTToken => token instanceof NbAuthJWTToken),
-    //     filter((token: NbAuthJWTToken) => token.isValid()),
-    //     takeUntil(this.destroy$)
-    //   )
-    //   .subscribe(async (token: NbAuthJWTToken) => {
-    //     const payload = token.getPayload();
-    //     const user = await this.authAppService.userGetByEmail(payload.email)
-    //     this.user = {
-    //       id: payload.user_id,
-    //       email: payload.email,
-    //       displayName: user?.displayName
-    //     };
-    //   });
-
-    // this.authService.onTokenChange().subscribe(token => {
-    //     if (token.isValid()) {
-    //       const firebaseUser = token.getPayload();
-    //       console.log('firebase-user', firebaseUser)
-    //       // this.firestore.doc(`usuarios/${firebaseUser.user_id}`).get().subscribe(doc => {
-    //       //   if (!doc.exists) {
-    //       //     this.firestore.doc(`usuarios/${firebaseUser.user_id}`).set({
-    //       //       email: firebaseUser.email,
-    //       //       creado: new Date(),
-    //       //       roles: ['user']
-    //       //     });
-    //       //   }
-    //       // });
-    //       this.user = firebaseUser;
-    //     }
-    //   });
-
-    // this.userService.getUsers()
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((users: any) => this.user = users.nick);
 
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService.onMediaQueryChange()

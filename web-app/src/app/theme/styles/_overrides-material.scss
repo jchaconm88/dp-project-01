@@ -4,6 +4,7 @@
     .mat-mdc-table {
         background-color: nb-theme(card-background-color) !important;
         color: nb-theme(card-text-color) !important;
+        border: 1px solid nb-theme(card-divider-color) !important;
     }
 
     .mat-mdc-cell,
@@ -14,6 +15,8 @@
         line-height: nb-theme(-font-weight-line-height) !important;
         background-color: nb-theme(card-background-color) !important;
         color: nb-theme(smart-table-fg) !important;
+        border-bottom-color: nb-theme(card-divider-color) !important;
+        // border-right: 1px solid nb-theme(card-divider-color) !important;
     }
 
     .mat-mdc-paginator,
@@ -26,5 +29,8 @@
     .mdc-checkbox {
         // background-color: var(--checkbox-basic-background-color);
         color: var(--checkbox-basic-border-color);
+    }
+    .mat-divider {
+        border-top-color: nb-theme(divider-color) !important;
     }
 }

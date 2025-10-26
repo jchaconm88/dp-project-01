@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { ContentComponent } from '../../../theme/controls/content/content.component';
 import { TableComponent } from '../../../theme/controls/table/table.component';
 import { AppTableDefDetail } from '../../../theme/models/app-table-def-detail';
@@ -6,9 +6,11 @@ import { SystemService } from '../../../core/services/system.service';
 import { FirebaseService } from '../../../core/services/firebase.service';
 import { CommonModule } from '@angular/common';
 import { DocumentData } from 'firebase/firestore';
-import { Observable, switchMap, take } from 'rxjs';
+import { Observable, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FirestoreService } from '../../../core/services/firestore.service';
+import { Router } from '@angular/router';
+import { ContentHeaderComponent } from '../../../theme/controls/content-header/content-header.component';
 
 interface User {
   id: string
@@ -21,91 +23,60 @@ interface User {
   imports: [
     CommonModule,
     ContentComponent,
+    ContentHeaderComponent,
     TableComponent
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss'
 })
-export class UserComponent implements OnInit {
-  private systemService = inject(SystemService);
-  //private firestore = inject(FirestoreService<User>);
-  //private firebaseService = inject(FirebaseService);
+export class UserComponent implements OnInit, OnDestroy {
   @ViewChild(TableComponent, { static: true }) table: TableComponent = new TableComponent;
-  tableDef: AppTableDefDetail[]  = [
+  private systemService = inject(SystemService);
+  tableDef: AppTableDefDetail[] = [
     { header: 'Nombre', column: 'displayName', order: 1, display: true, filter: true },
     { header: 'Correo', column: 'email', order: 2, display: true, filter: true }
-  ]  
-  //users = this.firestore.data;
-
-
-  // private refreshTrigger = signal(0);
-  // private usuarios$ = computed(() => {
-  //   this.refreshTrigger(); // reactivo
-  //   return this.systemService.userGetList();
-  // });
-
-  // usuariosSig = toSignal(
-  //   toObservable(this.refreshTrigger).pipe(
-  //     switchMap(() => this.systemService.userGetList())
-  //   ),
-  //   { initialValue: [] }
-  // );
-
-  //usuariosSig = toSignal(this.systemService.userGetList(), { initialValue: [] });
-  //users = toSignal(this.systemService.userGetList(), { initialValue: [] })
-  //users = signal<any[]>(this.systemService.userGetList())
+  ]
   showSelect: boolean = true
-  
-  constructor() {
-    //this.load();
-    // effect(() => {
-    //   // let _users = this.systemService.users();
-    //   // this.users = _users;
-    //   this.table.setDatasource(this.users())
-    //   console.log(this.users())
-    // });
+  private destroy$ = new Subject<void>();
+
+  constructor(private router: Router) {
   }
 
   ngOnInit() {
+    console.log('UserComponent: ngOnInit');
     this.load();
   }
 
   load() {
     try {
-      //this.table.setDatasource(this.users())
-      //this.systemService.userGetList()
-      // .pipe(takeUntilDestroyed())
-      // .subscribe(users => {
-      //   // Manejar usuarios aquí
-      //   this.users = users
-      // });
-      this.systemService.userGetList().subscribe(users => {
-        //this.users.update(users)
-        console.log('Usuarios cargados:', users);
-        this.table.setDatasource(users)
-      });
-
-      //this.firestore.loadAll('users');
-      
-      // let response = this.firebaseService.getCollection('users').subscribe(users => {
-      //   console.log('Usuarios desde Firestore:', users);
-      //   //console.log(response)
-      //   this.users = users
-      //   this.table.setDatasource(users)
-      // });
+      this.systemService.userGetList()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(users => {
+          console.log('Usuarios cargados:', users);
+          this.table.setDatasource(users)
+        });
     } catch (error) {
       console.log(error)
       //this.alertService.showError('Error!', String(error))
     }
   }
 
-  
-  edit(appRoleId: string): void {
-    
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  create() {
+    this.router.navigate(['/system/user', 'new']);
+  }
+
+  edit(userId: string): void {
+    console.log('Editando usuario:', userId);
+    this.router.navigate(['/system/user', userId]);
   }
 
   delete(appRoleId: string) {
-    
+
   }
 }
 

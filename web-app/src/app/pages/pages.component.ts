@@ -31,7 +31,7 @@ import { MENU_ITEMS } from './pages-menu';
 export class PagesComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   menuItems: NbMenuItem[] = [];
-  constructor(private authService: NbAuthService, private accessChecker: NbAccessChecker, private roleProvider: NbRoleProvider, private roleService: RoleService) { }
+  constructor(private accessChecker: NbAccessChecker, private roleProvider: NbRoleProvider) { }
 
   async ngOnInit() {
     try {
@@ -51,34 +51,6 @@ export class PagesComponent implements OnInit, OnDestroy {
             enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
           );
         });
-
-
-      // 1. Espera a que el rol esté completamente cargado
-      //await this.roleService.waitForRoleLoad();
-
-      // if (await firstValueFrom(this.roleProvider.getRole())) {
-      //   console.log('Current role:', await firstValueFrom(this.roleProvider.getRole()));
-      // }
-        
-      // await firstValueFrom(
-      //   this.roleProvider.getRole().pipe(
-      //     filter(role => role !== 'guest'), // Ignora el estado inicial
-      //     take(1),
-      //     timeout(5000),
-      //     catchError(() => of('guest'))
-      // ))
-
-      // if (await firstValueFrom(this.roleProvider.getRole())) {
-      //   console.log('Current role:', await firstValueFrom(this.roleProvider.getRole()));
-      // }
-        
-      // // Filtra primero los items habilitados
-      // const enabledItems = MENU_ITEMS.filter(item => item.enabled);
-
-      // // Mapea asyncronamente cada item
-      // this.menuItems = await Promise.all(
-      //   enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
-      // );
     } catch (error) {
       console.error('Error loading menu:', error);
       this.menuItems = []; // Asigna un array vacío en caso de error

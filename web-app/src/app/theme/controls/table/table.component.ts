@@ -75,6 +75,7 @@ export class TableComponent implements OnInit {
   }
 
   initDatatable(): void {
+    console.log('tableDef', this.tableDef); 
     this.tableDef.unshift({ header: '', column: 'select', order: 0, display: false, filter: true })
     this.tableColumns = this.tableDef.sort((a, b) => a.order - b.order)
     this.displayedColumns = this.tableColumns.filter(o => o.display == true).map(o => o.column)

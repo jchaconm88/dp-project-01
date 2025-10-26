@@ -11,32 +11,14 @@ import { FirebaseService } from './firebase.service';
 export class UserService {
   private authService = inject(NbAuthService);
   private firebaseService = inject(FirebaseService);
-
-  // private _user$ = new BehaviorSubject<any | null>(null);
-  // user$ = this._user$.asObservable();
   private userSubject = new BehaviorSubject<any | null>(null);
   user$ = this.userSubject.asObservable();
 
   constructor() {
-    // this.authService.onTokenChange()
-    //   .pipe(
-    //     filter((token): token is NbAuthJWTToken => token instanceof NbAuthJWTToken),
-    //     filter((token) => token.isValid()),
-    //     take(1)
-    //   )
-    //   .subscribe(async (token) => {
-    //     const payload = token.getPayload();
-    //     const user = await this.userGetByEmail(payload.email)
-    //     this._user$.next({
-    //       id: payload.user_id,
-    //       email: payload.email,
-    //       displayName: user?.displayName
-    //     });
-    //   });
-
     this.authService.onTokenChange()
       .pipe(
         switchMap((token: NbAuthToken) => {
+          console.log('UserService: onTokenChange', token);
           if (token instanceof NbAuthJWTToken && token.isValid()) {
             const payload = token.getPayload();
             return from(this.userGetByEmail(payload.email)).pipe(
@@ -56,9 +38,12 @@ export class UserService {
       .subscribe(user => this.userSubject.next(user));
   }
 
-
   userGetByEmail(email: string) {
     console.log('UserService: userGetByEmail', email);
     return this.firebaseService.getFirst('users', 'email', email);
+  }
+
+  userGet(id: string) {
+    return this.firebaseService.getDocument('users', id);
   }
 }

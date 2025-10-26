@@ -63,8 +63,14 @@ https://akveo.github.io/eva-icons/#/
 ng g c theme/components/header --project app-layout --style scss --skip-tests=true
 ng g c theme/components/login --project app-layout --style scss --skip-tests=true
 ng g c theme/components/register --project app-layout --style scss --skip-tests=true
+ng g c theme/controls/content-detail --project app-layout --style scss --skip-tests=true
+ng g c theme/controls/divider --project app-layout --style scss --skip-tests=true
+ng g c theme/controls/content-header --project app-layout --style scss --skip-tests=true
 ng g c pages/home --project app-layout --style scss --skip-tests=true
 ng g c pages/system/user --project app-layout --style scss --skip-tests=true
+ng g c pages/system/user/user-detail --project app-layout --style scss --skip-tests=true
+ng g c pages/system/role --project app-layout --style scss --skip-tests=true
+ng g c pages/system/role/role-detail --project app-layout --style scss --skip-tests=true
 
 ng g s core/services/system --project app-layout --skip-tests=true
 ng g s core/services/auth --project app-layout --skip-tests=true

@@ -13,17 +13,19 @@ export const MENU_ITEMS: FirebaseMenuItem[] = [
       enabled: true,
       icon: 'home-outline',
       link: '/pages/iot-dashboard',
-      permission: ['view', 'user']
+      permission: ['view', 'dashboard']
     },
     {
       title: 'FEATURES',
       enabled: true,
       group: true,
+      permission: ['view', 'features']
     },
     {
       title: 'Sistema',
       enabled: true,
       icon: 'layout-outline',
+      permission: ['view', 'system'],
       children: [
         {
           title: 'Usuarios',
@@ -31,8 +33,9 @@ export const MENU_ITEMS: FirebaseMenuItem[] = [
           permission: ['view', 'user']
         },
         {
-          title: 'List',
-          link: '/pages/layout/list',
+          title: 'Roles',
+          link: '/system/role',
+          permission: ['view', 'role']
         },
         {
           title: 'Infinite List',

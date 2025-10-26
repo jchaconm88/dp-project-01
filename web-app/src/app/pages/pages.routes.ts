@@ -22,7 +22,10 @@ export const AUTH_ROUTES: Routes = [
     canActivate: [AuthGuard],
     component: PagesComponent,
     children: [
-      { path: 'user', loadComponent: () => import('./system/user/user.component').then(m => m.UserComponent) }
+      { path: 'user', loadComponent: () => import('./system/user/user.component').then(m => m.UserComponent) },
+      { path: 'user/:id', loadComponent: () => import('./system/user/user-detail/user-detail.component').then(m => m.UserDetailComponent) },
+      { path: 'role', loadComponent: () => import('./system/role/role.component').then(m => m.RoleComponent) },
+      { path: 'role/:id', loadComponent: () => import('./system/role/role-detail/role-detail.component').then(m => m.RoleDetailComponent) },
     ]
   }
 ];

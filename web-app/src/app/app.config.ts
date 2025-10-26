@@ -91,11 +91,11 @@ export const appConfig: ApplicationConfig = {
       NbSecurityModule.forRoot({
         accessControl: {
           guest: {
-            view: 'guest'
+            view: ['dashboard', 'features', 'system']
           },
           user: {
             parent: 'guest',
-            view: 'user',
+            view: ['user', 'role'],
             create: '*',
             edit: '*',
             remove: '*',

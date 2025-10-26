@@ -18,6 +18,11 @@
 
 .mat-mdc-cell, .mat-mdc-footer-cell {
     font-size: 14px;
+    a {
+        cursor: pointer;
+        text-decoration: underline;
+        color: inherit;
+    }
 }
 
 mat-row, mat-header-row, mat-footer-row, th.mat-mdc-header-cell, td.mat-mdc-cell, td.mat-mdc-footer-cell {

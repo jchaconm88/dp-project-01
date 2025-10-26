@@ -1,0 +1,14 @@
+nb-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    button.appearance-ghost {
+        padding: 0 !important;
+        margin-right: 1rem;
+        nb-icon {
+            font-size: 2rem !important;
+            width: 2rem !important;
+            height: 2rem !important;
+        }
+    }
+}
