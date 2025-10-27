@@ -6,11 +6,13 @@ import { SystemService } from '../../../core/services/system.service';
 import { FirebaseService } from '../../../core/services/firebase.service';
 import { CommonModule } from '@angular/common';
 import { DocumentData } from 'firebase/firestore';
-import { Observable, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { firstValueFrom, Observable, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FirestoreService } from '../../../core/services/firestore.service';
 import { Router } from '@angular/router';
 import { ContentHeaderComponent } from '../../../theme/controls/content-header/content-header.component';
+import { NbAccessChecker } from '@nebular/security';
+import { RoleAccessService } from '../../../core/services/role-access.service';
 
 interface User {
   id: string
@@ -31,6 +33,7 @@ interface User {
 })
 export class UserComponent implements OnInit, OnDestroy {
   @ViewChild(TableComponent, { static: true }) table: TableComponent = new TableComponent;
+  @ViewChild(ContentComponent, { static: true }) content: ContentComponent = new ContentComponent;
   private systemService = inject(SystemService);
   tableDef: AppTableDefDetail[] = [
     { header: 'Nombre', column: 'displayName', order: 1, display: true, filter: true },
@@ -39,7 +42,7 @@ export class UserComponent implements OnInit, OnDestroy {
   showSelect: boolean = true
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private accessChecker: NbAccessChecker, private roleAccess: RoleAccessService) {
   }
 
   ngOnInit() {
@@ -47,17 +50,26 @@ export class UserComponent implements OnInit, OnDestroy {
     this.load();
   }
 
-  load() {
+  async load() {
     try {
-      this.systemService.userGetList()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(users => {
-          console.log('Usuarios cargados:', users);
-          this.table.setDatasource(users)
-        });
+      const canList = await this.roleAccess.isGranted('list', 'user')
+      if (canList) {
+        console.log('Acceso concedido a la lista de usuarios.');
+        this.content.showAlert = false
+        this.systemService.userGetList()
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(users => {
+            console.log('Usuarios cargados:', users);
+            this.table.setDatasource(users) 
+          });
+      }
+      else {
+        console.log('Acceso denegado a la lista de usuarios.');
+        this.content.showAlertMessage('Acceso denegado a la lista de usuarios.');
+      }
     } catch (error) {
       console.log(error)
-      //this.alertService.showError('Error!', String(error))
+      this.content.showAlertMessage(error as string);
     }
   }
 

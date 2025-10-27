@@ -74,4 +74,5 @@ ng g c pages/system/role/role-detail --project app-layout --style scss --skip-te
 
 ng g s core/services/system --project app-layout --skip-tests=true
 ng g s core/services/auth --project app-layout --skip-tests=true
+ng g s core/services/role-access --project app-layout --skip-tests=true
 ng g s core/services/firebase --project app-layout --skip-tests=true

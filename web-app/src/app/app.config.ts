@@ -95,6 +95,7 @@ export const appConfig: ApplicationConfig = {
           },
           user: {
             parent: 'guest',
+            list: ['user', 'role'],
             view: ['user', 'role'],
             create: '*',
             edit: '*',

@@ -9,6 +9,7 @@ import { FirebaseMenuItem } from '../core/interfaces/firebase-menu-item';
 import { RoleService } from '../core/services/role.service';
 import { NbAuthService } from '@nebular/auth';
 import { MENU_ITEMS } from './pages-menu';
+import { RoleAccessService } from '../core/services/role-access.service';
 
 @Component({
   selector: 'app-pages',
@@ -31,26 +32,34 @@ import { MENU_ITEMS } from './pages-menu';
 export class PagesComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   menuItems: NbMenuItem[] = [];
-  constructor(private accessChecker: NbAccessChecker, private roleProvider: NbRoleProvider) { }
+  constructor(private accessChecker: NbAccessChecker, private roleProvider: NbRoleProvider, private roleAccess: RoleAccessService) { }
 
   async ngOnInit() {
     try {
-      this.roleProvider.getRole()
-        .pipe(
-          distinctUntilChanged(),
-          filter(role => !!role),
-          takeUntil(this.destroy$)
-        )
-        .subscribe(async role => {
-          console.log('Rol detectado:', role);
-          // Filtra primero los items habilitados
-          const enabledItems = MENU_ITEMS.filter(item => item.enabled);
+      this.roleAccess.currentRole$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async role => {
+        const enabledItems = MENU_ITEMS.filter(item => item.enabled);
+        this.menuItems = await Promise.all(
+          enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
+        );
+      });
+      // this.roleProvider.getRole()
+      //   .pipe(
+      //     distinctUntilChanged(),
+      //     filter(role => !!role),
+      //     takeUntil(this.destroy$)
+      //   )
+      //   .subscribe(async role => {
+      //     console.log('Rol detectado:', role);
+      //     // Filtra primero los items habilitados
+      //     const enabledItems = MENU_ITEMS.filter(item => item.enabled);
 
-          // Mapea asyncronamente cada item
-          this.menuItems = await Promise.all(
-            enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
-          );
-        });
+      //     // Mapea asyncronamente cada item
+      //     this.menuItems = await Promise.all(
+      //       enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
+      //     );
+      //   });
     } catch (error) {
       console.error('Error loading menu:', error);
       this.menuItems = []; // Asigna un array vacío en caso de error

@@ -15,11 +15,17 @@ import { NbActionsModule, NbAlertModule, NbCardModule } from '@nebular/theme';
 })
 export class ContentComponent {
   @Input() title: string = ''
-  showAlert = true;
+  showAlert = false;
+  messageHeader: string = '';
 
   constructor() { }
 
   onClose() {
     this.showAlert = false;
+  }
+
+  showAlertMessage(message: string) {
+    this.messageHeader = message;
+    this.showAlert = true;
   }
 }
