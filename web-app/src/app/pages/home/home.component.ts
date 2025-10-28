@@ -57,13 +57,5 @@ export class HomeComponent implements OnInit, OnDestroy {
   //   const usersCollection = collection(this.firestore, 'users');
   //   return collectionData(usersCollection, { idField: 'id' });
   // }
-  
-  edit(appRoleId: string): void {
-    
-  }
-
-  delete(appRoleId: string) {
-    
-  }
 
 }

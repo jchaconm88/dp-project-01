@@ -32,18 +32,20 @@ import { RoleAccessService } from '../core/services/role-access.service';
 export class PagesComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   menuItems: NbMenuItem[] = [];
-  constructor(private accessChecker: NbAccessChecker, private roleProvider: NbRoleProvider, private roleAccess: RoleAccessService) { }
+  constructor(private accessChecker: NbAccessChecker, private roleProvider: NbRoleProvider, private roleAccess: RoleAccessService, private roleService: RoleService) { }
 
   async ngOnInit() {
     try {
-      this.roleAccess.currentRole$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async role => {
-        const enabledItems = MENU_ITEMS.filter(item => item.enabled);
-        this.menuItems = await Promise.all(
-          enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
-        );
-      });
+      this.roleService.currentRole$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async role => {
+          console.log('Rol detectado en PagesComponent:', role);
+          // Filtra primero los items habilitados
+          const enabledItems = MENU_ITEMS.filter(item => item.enabled);
+          this.menuItems = await Promise.all(
+            enabledItems.map(item => this.mapFirebaseItemToNbMenuItem(item))
+          );
+        });
       // this.roleProvider.getRole()
       //   .pipe(
       //     distinctUntilChanged(),

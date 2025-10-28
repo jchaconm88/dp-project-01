@@ -25,6 +25,7 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
 })
 export class ContentHeaderComponent implements OnInit {
   @Input() showFilter: boolean = true
+  @Input() deleteDisabled: boolean = true
   @Output() onFilter = new EventEmitter<any>()
   @Output() onLoad = new EventEmitter<any>()
   @Output() onDelete = new EventEmitter<any>()

@@ -10,7 +10,7 @@
     <button nbButton (click)="loadHandler()">
         <nb-icon icon="refresh-outline"></nb-icon>
     </button>
-    <button nbButton (click)="deleteHandler()">
+    <button nbButton [disabled]="deleteDisabled" (click)="deleteHandler()">
         Eliminar
     </button>
     <button nbButton (click)="createHandler()">

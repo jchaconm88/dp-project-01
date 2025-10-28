@@ -20,10 +20,7 @@ import { LoginComponent } from './theme/components/login/login.component';
 import { distinctUntilChanged, Observable, of as observableOf, shareReplay, startWith, tap } from 'rxjs';
 import { RoleService } from './core/services/role.service';
 import { RegisterComponent } from './theme/components/register/register.component';
-import { AppAccessChecker } from './core/services/access.checker';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 
 @Injectable({ providedIn: 'root' })
 export class NbSimpleRoleProvider extends NbRoleProvider {
@@ -117,7 +114,6 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     { provide: NbRoleProvider, useClass: NbSimpleRoleProvider },
-    { provide: NbAccessChecker, useExisting: AppAccessChecker },
     { provide: NbFirebasePasswordStrategy, useClass: NbFirebasePasswordStrategy },
     //PrimeNg
     provideAnimationsAsync()

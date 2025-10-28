@@ -1,7 +1,6 @@
 <dp-content title="USUARIOS">
-  <dp-content-header (onFilter)="table.filter($event)" (onLoad)="load()" (onCreate)="create()">
+  <dp-content-header (onFilter)="table.filter($event)" (onLoad)="load()" (onCreate)="create()" (onDelete)="delete()" [deleteDisabled]="deleteDisabled()">
   </dp-content-header>
-    <dp-table [tableDef]="tableDef" linkColumn="displayName" [showSelect]="showSelect" (onEdit)="edit($event)"
-      (onDelete)="delete($event)">
+    <dp-table [tableDef]="tableDef" linkColumn="displayName" [showSelect]="showSelect" (onDetail)="detail($event)">
     </dp-table>
 </dp-content>

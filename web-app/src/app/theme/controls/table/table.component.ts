@@ -37,13 +37,12 @@ export class TableComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   dataSource!: MatTableDataSource<any>
   @Input() tableDef!: AppTableDefDetail[]
-  @Output() onEdit = new EventEmitter<any>()
-  @Output() onDelete = new EventEmitter<any>()
+  @Output() onDetail = new EventEmitter<any>()
   @ContentChildren(PerColumnComponent) columns: QueryList<PerColumnComponent> = new QueryList<PerColumnComponent>();
   tableColumns!: AppTableDefDetail[]
   displayedColumns!: string[]
 
-  selectedCols = new SelectionModel<any>(true, [])
+  selectedRows = new SelectionModel<any>(true, [])
   @Output()
   selectionChange: EventEmitter<SelectionModel<any>> = new EventEmitter<SelectionModel<any>>()
   
@@ -79,7 +78,6 @@ export class TableComponent implements OnInit {
     this.tableDef.unshift({ header: '', column: 'select', order: 0, display: false, filter: true })
     this.tableColumns = this.tableDef.sort((a, b) => a.order - b.order)
     this.displayedColumns = this.tableColumns.filter(o => o.display == true).map(o => o.column)
-    this.displayedColumns.push('options')
     this.displaySelectColumn(this._showSelect)
   }
 
@@ -106,12 +104,8 @@ export class TableComponent implements OnInit {
     }
   }
 
-  editHandler(id: string) {
-    this.onEdit.emit(id);
-  }
-
-  deleteHandler(element: any) {
-    this.onDelete.emit(element);
+  detailHandler(id: string) {
+    this.onDetail.emit(id);
   }
 
   getValue(data: any, columnName: any, type: any) {
@@ -131,16 +125,16 @@ export class TableComponent implements OnInit {
   }
 
   isAllSelected() {
-    const numSelected = this.selectedCols.selected.length;
+    const numSelected = this.selectedRows.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
   }
 
   isNoneAndSendSelected() {
     let isDisabled = false
-    isDisabled = this.selectedCols.selected.length > 0? false: true    
+    isDisabled = this.selectedRows.selected.length > 0? false: true    
     if (!isDisabled) {
-      let send = this.selectedCols.selected.find(o => o.status != 'CREADO' && o.status != 'RECHAZADA')
+      let send = this.selectedRows.selected.find(o => o.status != 'CREADO' && o.status != 'RECHAZADA')
       if (send) isDisabled = true
     }
     return isDisabled
@@ -148,11 +142,15 @@ export class TableComponent implements OnInit {
 
   masterToggle() {
     if (this.isAllSelected()) {
-      this.selectedCols.clear();
+      this.selectedRows.clear();
       return;
     }
 
-    this.selectedCols.select(...this.dataSource.data);
+    this.selectedRows.select(...this.dataSource.data);
+  }
+
+  getSelectedRows(): any[] {
+    return this.selectedRows.selected;
   }
 
 }

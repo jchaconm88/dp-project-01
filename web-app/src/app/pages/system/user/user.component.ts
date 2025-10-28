@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { ContentHeaderComponent } from '../../../theme/controls/content-header/content-header.component';
 import { NbAccessChecker } from '@nebular/security';
 import { RoleAccessService } from '../../../core/services/role-access.service';
+import { RoleService } from '../../../core/services/role.service';
 
 interface User {
   id: string
@@ -42,7 +43,7 @@ export class UserComponent implements OnInit, OnDestroy {
   showSelect: boolean = true
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router, private accessChecker: NbAccessChecker, private roleAccess: RoleAccessService) {
+  constructor(private router: Router, private accessChecker: NbAccessChecker, private roleService: RoleService) {
   }
 
   ngOnInit() {
@@ -51,22 +52,29 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   async load() {
-    try {
-      const canList = await this.roleAccess.isGranted('list', 'user')
-      if (canList) {
-        console.log('Acceso concedido a la lista de usuarios.');
-        this.content.showAlert = false
-        this.systemService.userGetList()
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(users => {
-            console.log('Usuarios cargados:', users);
-            this.table.setDatasource(users) 
-          });
-      }
-      else {
-        console.log('Acceso denegado a la lista de usuarios.');
-        this.content.showAlertMessage('Acceso denegado a la lista de usuarios.');
-      }
+    try {      
+      this.table.setDatasource([])
+      this.roleService.currentRole$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async role => {
+          console.log('Rol detectado en UserComponent:', role);
+          const canList = await firstValueFrom(this.accessChecker.isGranted('list', 'user'))
+          if (canList) {
+            console.log('Acceso concedido a la lista de usuarios.');
+            this.content.showAlert = false
+            this.systemService.userGetList()
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(users => {
+                console.log('Usuarios cargados:', users);
+                this.table.setDatasource(users)
+              });
+          }
+          else {
+            console.log('Acceso denegado a la lista de usuarios.');
+            this.content.showAlertMessage('Acceso denegado a la lista de usuarios.');
+          }
+        });
+      
     } catch (error) {
       console.log(error)
       this.content.showAlertMessage(error as string);
@@ -82,13 +90,18 @@ export class UserComponent implements OnInit, OnDestroy {
     this.router.navigate(['/system/user', 'new']);
   }
 
-  edit(userId: string): void {
-    console.log('Editando usuario:', userId);
+  detail(userId: string): void {
+    console.log('Mostrando usuario:', userId);
     this.router.navigate(['/system/user', userId]);
   }
 
-  delete(appRoleId: string) {
+  delete() {
 
+  }
+
+  deleteDisabled(): boolean {
+    const selected = this.table.getSelectedRows();
+    return selected.length === 0;
   }
 }
 
