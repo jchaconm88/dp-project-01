@@ -31,6 +31,12 @@
   @include ngx-pace-theme();
 
   @include nb-overrides();
+
+  .form-body {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
 };
 
 

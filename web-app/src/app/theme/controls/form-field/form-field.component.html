@@ -1,0 +1,15 @@
+<ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="'input'">
+        <nb-form-field>
+          <nb-icon *ngIf="icon" nbPrefix icon="{{icon}}" pack="eva"></nb-icon>
+          <input type="text" nbInput placeholder="{{label}}" 
+          [formControlName]="controlName"
+          [status]="validateError() ? 'danger' : 'basic'">
+        </nb-form-field>
+        <ng-container *ngIf="validateError()">
+            <p class="error-message">
+                {{getError()}}
+            </p>
+        </ng-container>
+    </ng-container>
+</ng-container>

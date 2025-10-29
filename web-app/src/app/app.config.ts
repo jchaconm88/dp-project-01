@@ -6,7 +6,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 import { provideAnimations } from '@angular/platform-browser/animations';
 
-import { NbThemeModule, NbSidebarModule, NbMenuModule, NbLayoutModule } from '@nebular/theme';
+import { NbThemeModule, NbSidebarModule, NbMenuModule, NbLayoutModule, NbWindowModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 
 import { routes } from './app.routes';
@@ -50,6 +50,7 @@ export const appConfig: ApplicationConfig = {
       AngularFireModule.initializeApp(environment.firebase),
       //nebular
       NbThemeModule.forRoot({ name: 'default' }),
+      NbWindowModule.forRoot(),
       NbSidebarModule.forRoot(),
       NbMenuModule.forRoot(),
       NbEvaIconsModule,

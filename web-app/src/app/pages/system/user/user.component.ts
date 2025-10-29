@@ -14,6 +14,8 @@ import { ContentHeaderComponent } from '../../../theme/controls/content-header/c
 import { NbAccessChecker } from '@nebular/security';
 import { RoleAccessService } from '../../../core/services/role-access.service';
 import { RoleService } from '../../../core/services/role.service';
+import { NbWindowService } from '@nebular/theme';
+import { UserSetComponent } from './user-set/user-set.component';
 
 interface User {
   id: string
@@ -43,7 +45,7 @@ export class UserComponent implements OnInit, OnDestroy {
   showSelect: boolean = true
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router, private accessChecker: NbAccessChecker, private roleService: RoleService) {
+  constructor(private router: Router, private accessChecker: NbAccessChecker, private roleService: RoleService, private windowService: NbWindowService) {
   }
 
   ngOnInit() {
@@ -87,7 +89,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   create() {
-    this.router.navigate(['/system/user', 'new']);
+    this.windowService.open(UserSetComponent, { title: `Agregar Usuario` });
   }
 
   detail(userId: string): void {
