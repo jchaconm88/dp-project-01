@@ -1,0 +1,8 @@
+<dp-content-form (onCancel)="cancel()" (onSave)="save()" title="USUARIO">
+    <form [formGroup]="userFormGroup" role="form">
+        <div class="form-body">
+            <dp-form-field type="input" label="Email" controlName="email"></dp-form-field>
+            <dp-form-field type="input" label="Nombre" controlName="displayName"></dp-form-field>
+        </div>
+    </form>
+</dp-content-form>

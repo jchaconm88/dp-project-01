@@ -71,11 +71,18 @@ ng g c theme/controls/content-form --project app-layout --style scss --skip-test
 ng g c pages/home --project app-layout --style scss --skip-tests=true
 ng g c pages/system/user --project app-layout --style scss --skip-tests=true
 ng g c pages/system/user/user-set --project app-layout --style scss --skip-tests=true
-ng g c pages/system/user/user-detail --project app-layout --style scss --skip-tests=true
-ng g c pages/system/role --project app-layout --style scss --skip-tests=true
+ng g c pages/system/user/user-info --project app-layout --style scss --skip-tests=true
+ng g c modules/system/pages/role --project app-layout --style scss --skip-tests=true
+ng g c modules/system/pages/role/role-set --project app-layout --style scss --skip-tests=true
+ng g c modules/system/pages/role/role-info --project app-layout --style scss --skip-tests=true
 ng g c pages/system/role/role-detail --project app-layout --style scss --skip-tests=true
+ng g c pages/master/material --project app-layout --style scss --skip-tests=true
+ng g c pages/master/material/material-set --project app-layout --style scss --skip-tests=true
+ng g c pages/master/material/material-info --project app-layout --style scss --skip-tests=true
 
 ng g s core/services/system --project app-layout --skip-tests=true
 ng g s core/services/auth --project app-layout --skip-tests=true
 ng g s core/services/role-access --project app-layout --skip-tests=true
 ng g s core/services/firebase --project app-layout --skip-tests=true
+
+ng g i core/models/user --type=model

@@ -14,6 +14,9 @@ import { NbButtonModule } from '@nebular/theme';
 export class ContentFormComponent implements OnInit {
   @Output() onSave = new EventEmitter<any>()
   @Output() onCancel = new EventEmitter<any>()
+  showAlert = false;
+  messageHeader: string = '';
+  loading = false;
 
   constructor() { }
 
@@ -26,5 +29,13 @@ export class ContentFormComponent implements OnInit {
 
   cancelHandler() {
     this.onCancel.emit();
+  }
+
+  showAlertMessage(error: any) {
+    let message = 'Ha ocurrido un error inesperado.';
+    if (typeof error === 'string') message = error
+    else if (error && error.error && error.error.message) message = error.error.message;
+    this.messageHeader = message;
+    this.showAlert = true;
   }
 }

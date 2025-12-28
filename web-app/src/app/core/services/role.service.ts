@@ -11,12 +11,9 @@ export class RoleService {
 
   constructor() {
     this.nbAuthService.onTokenChange()
-      .pipe(
-        filter((token: NbAuthToken): token is NbAuthJWTToken => token instanceof NbAuthJWTToken),
-      )
       .subscribe(async token => {
         console.log('RoleService: onTokenChange', token);
-        if (token.isValid()) {
+        if (token instanceof NbAuthJWTToken && token.isValid()) {
           const payload = token.getPayload();
           await this.loadRoleFromFirestore(payload.email);
         } else {
@@ -38,10 +35,6 @@ export class RoleService {
       console.error('Error cargando rol:', error);
       this.role$.next('guest');
     } 
-  }
-  
-  get currentRole$() {
-    return this.role$.asObservable().pipe(filter(role => !!role));
   }
 
   getRole(): Observable<string> {

@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { AppTableDefDetail } from '../../models/app-table-def-detail';
 import { getFilterPredicate, getJsonValue } from '../../utils/utils';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Directive({ selector: '[tableHeader]' })
 export class TableHeaderDirective {
@@ -27,7 +28,8 @@ export class TableHeaderDirective {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
@@ -35,27 +37,35 @@ export class TableHeaderDirective {
 export class TableComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  dataSource!: MatTableDataSource<any>
-  @Input() tableDef!: AppTableDefDetail[]
-  @Output() onDetail = new EventEmitter<any>()
   @ContentChildren(PerColumnComponent) columns: QueryList<PerColumnComponent> = new QueryList<PerColumnComponent>();
+  dataSource!: MatTableDataSource<any>
   tableColumns!: AppTableDefDetail[]
   displayedColumns!: string[]
-
+  loading: boolean = false
   selectedRows = new SelectionModel<any>(true, [])
-  @Output()
-  selectionChange: EventEmitter<SelectionModel<any>> = new EventEmitter<SelectionModel<any>>()
-  
   itemTemplate!: TemplateRef<any>
+
+  @Input() tableDef!: AppTableDefDetail[]
+  @Input() linkColumn: string = ''
   
-  _showSelect: boolean = false
+  _showSelect: boolean = true
   @Input()
   set showSelect(value: boolean) {
     this._showSelect = value
     this.displaySelectColumn(value)
   }
-  @Input() linkColumn: string = ''
 
+  _showOptions: boolean = true
+  @Input()
+  set showOptions(value: boolean) {
+    this._showOptions = value
+    this.displayOptionsColumn(value)
+  }
+
+  @Output() onDetail = new EventEmitter<any>()
+  @Output() onEdit = new EventEmitter<any>()
+  @Output() selectionChange: EventEmitter<SelectionModel<any>> = new EventEmitter<SelectionModel<any>>()
+  
   constructor() {
    }
 
@@ -66,18 +76,34 @@ export class TableComponent implements OnInit {
   displaySelectColumn(value: boolean){
     let index = this.displayedColumns?.findIndex(o => o == 'select')
     if (index >= 0) {
-      if (!value) this.displayedColumns?.shift()
+      if (!value) this.displayedColumns?.splice(index, 1)
     }
     else {
       if (value) this.displayedColumns?.unshift('select')
     }
   }
 
+  displayOptionsColumn(value: boolean){
+    let index = this.displayedColumns?.findIndex(o => o == 'options')
+    if (index >= 0) {
+      if (!value) this.displayedColumns?.splice(index, 1)
+    }
+    else {
+      if (value) this.displayedColumns?.push('options')
+    }
+  console.log("displayedColumns", this.displayedColumns)
+  }
+
   initDatatable(): void {
-    console.log('tableDef', this.tableDef); 
-    this.tableDef.unshift({ header: '', column: 'select', order: 0, display: false, filter: true })
-    this.tableColumns = this.tableDef.sort((a, b) => a.order - b.order)
+    // if (!this.displayedColumns?.find(o => o == 'select')) {
+    //   this.tableDef.unshift({ header: '', column: 'select', order: 0, display: false, filter: true })
+    // }
+    // if (!this.displayedColumns?.find(o => o == 'options')) {
+    //   this.tableDef.push({ header: '', column: 'options', order: 0, display: false, filter: true })
+    // }
+    this.tableColumns = this.tableDef
     this.displayedColumns = this.tableColumns.filter(o => o.display == true).map(o => o.column)
+    this.displayOptionsColumn(this._showOptions)
     this.displaySelectColumn(this._showSelect)
   }
 
@@ -106,6 +132,10 @@ export class TableComponent implements OnInit {
 
   detailHandler(id: string) {
     this.onDetail.emit(id);
+  }
+
+  editHandler(id: string) {
+    this.onEdit.emit(id);
   }
 
   getValue(data: any, columnName: any, type: any) {
@@ -153,4 +183,12 @@ export class TableComponent implements OnInit {
     return this.selectedRows.selected;
   }
 
+  clearSelectedRows() {
+    this.selectedRows.clear();
+  }
+
+  clearDatasource() {
+    this.clearSelectedRows()
+    this.setDatasource([])
+  }
 }

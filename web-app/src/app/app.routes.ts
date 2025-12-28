@@ -6,7 +6,7 @@ import { RegisterComponent } from './theme/components/register/register.componen
 
 export const routes: Routes = [
     { path: '', 
-      loadChildren: () => import('./pages/pages.routes').then(m => m.AUTH_ROUTES) }, 
+      loadChildren: () => import('./modules/modules.routes').then(m => m.MODULES_ROUTES) }, 
     {
         path: 'auth',
         component: NbAuthComponent,

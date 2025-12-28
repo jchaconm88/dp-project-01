@@ -1,117 +1,95 @@
 import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
 import { addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, getDoc, getDocs, limit, orderBy, query, setDoc, updateDoc, where, writeBatch } from '@angular/fire/firestore';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { from, map, Observable, switchMap } from 'rxjs';
 const defaulPassword = 'D36@us3r_'
 
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService {
+export class FirebaseService<T extends { id?: string }> {
   private firestore = inject(Firestore);
   private auth = inject(Auth);
   private injector = inject(Injector);
 
-  getCurrentUser(){
-      return this.auth.currentUser;
+  getCurrentUser() {
+    return this.auth.currentUser;
   }
 
-  createUser(email: string) {  
+  createUser(email: string) {
     return createUserWithEmailAndPassword(this.auth, email, defaulPassword)
   }
 
-  getDocument(collectionName: string, id: string) {
+  getDocument(collectionName: string, id: string): Observable<T> {
     return runInInjectionContext(this.injector, () => {
       const docRef = doc(this.firestore, `${collectionName}/${id}`);
-      return docData(docRef, { idField: 'id' })
+      return docData(docRef, { idField: 'id' }) as Observable<T>
     })
   }
 
-  getLogData(collectionName: string, data: any, event: string) {
-    let logData = {} as any
-    logData.collection = collectionName
-    logData.event = event
-    logData.data = data
-    logData.createBy = this.getCurrentUser()?.email
-    logData.createAt = new Date()
+  addDocument(collectionName: string, data: T): Observable<any> {
+    const payload = {
+      ...data,
+      createdBy: this.getCurrentUser()?.email,
+      createdAt: new Date(),
+    };
 
-    return logData
+    return from(addDoc(collection(this.firestore, collectionName), payload));
   }
 
-  async addLog(collectionName: string, data: any, event: string){
-    await addDoc(collection(this.firestore, 'app-logs'), this.getLogData(collectionName, data, event));
-  }
-
-  async addDocument(collectionName: string, data: any){
-    data.createBy = this.getCurrentUser()?.email
-    data.createAt = new Date()
-    const docRef = await addDoc(collection(this.firestore, collectionName), data);
-    await this.addLog(collectionName, data, 'add')
-    return docRef.id
-  }
-
-  async addBatch(collectionName: string, dataList: any[]){
+  async addBatch(collectionName: string, dataList: any[]) {
     const batch = writeBatch(this.firestore);
     for (var data of dataList) {
       data.createBy = this.getCurrentUser()?.email
       data.createAt = new Date()
-      batch.set(doc(collection(this.firestore, collectionName)), data);      
-      batch.set(doc(collection(this.firestore, 'app-logs')), this.getLogData(collectionName, data, 'batch'));
+      batch.set(doc(collection(this.firestore, collectionName)), data);
     }
     await batch.commit();
   }
 
-  async updateDocument(collectionName: string, documentId: string, data: any) {
-    data.updateBy = this.getCurrentUser()?.email
-    data.updateAt = new Date()
+  updateDocument(collectionName: string, documentId: string, data: Partial<T>): Observable<void> {
+    const payload = {
+      ...data,
+      updateBy: this.getCurrentUser()?.email,
+      updateAt: new Date(),
+    };
     const docRef = doc(this.firestore, collectionName, documentId);
-    await updateDoc(docRef, data);
-    await this.addLog(collectionName, data, 'update')
-    return docRef.id
+    return from(updateDoc(docRef, payload))
   }
 
-  async replaceDocument(collectionName: string, documentId: string, data: any) {
+  replaceDocument(collectionName: string, documentId: string, data: T): Observable<void> {
     const docRef = doc(this.firestore, collectionName, documentId);
-    await setDoc(docRef, data);
+    return from(setDoc(docRef, data))
   }
 
-  async deleteDocument (collectionName: string, data: any) {
-    await deleteDoc(doc(this.firestore, collectionName, data.id));
-    await this.addLog(collectionName, data, 'delete')
+  deleteDocument(collectionName: string, data: any) {
+    return from(deleteDoc(doc(this.firestore, collectionName, data.id)))
   }
 
   async getCollectionWithFilter(collectionName: string, filter: string, value: unknown) {
-      const response: any[] = []
-      
-      const restaurantRef = collection(this.firestore, collectionName);
-      const q = query(restaurantRef, where(filter, '==', value));
-      const querySnapshot = await getDocs(q);
-  
-      querySnapshot.forEach((doc) => {
-          const item: any = doc.data()
-          item.id = doc.id
-          response.push(item)
-      })    
-      return response     
+    const response: any[] = []
+
+    const restaurantRef = collection(this.firestore, collectionName);
+    const q = query(restaurantRef, where(filter, '==', value));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      const item: any = doc.data()
+      item.id = doc.id
+      response.push(item)
+    })
+    return response
   }
 
-  async getCollectionWithMultiFilter(collectionName: string, filterArray: any[]) {
-      const response: any[] = []
+  getCollectionWithMultiFilter(collectionName: string, filterArray: any[]) {
+    let filterQuery: any[] = []
+    filterArray.forEach(element => {
+      filterQuery.push(where(element.filter, element.operator, element.value))
+    });
 
-      let filterQuery: any[] = []
-      filterArray.forEach(element => {
-        filterQuery.push(where(element.filter, element.operator, element.value))
-      });
-      
-      const restaurantRef = collection(this.firestore, collectionName);
-      const q = query(restaurantRef, ...filterQuery);
-      const querySnapshot = await getDocs(q);
-  
-      querySnapshot.forEach((doc) => {
-          const item: any = doc.data()
-          item.id = doc.id
-          response.push(item)
-      })    
-      return response     
+    const restaurantRef = collection(this.firestore, collectionName);
+    const q = query(restaurantRef, ...filterQuery);
+    return collectionData(q, { idField: 'id' })
   }
 
   getCollection(collectionName: string) {
