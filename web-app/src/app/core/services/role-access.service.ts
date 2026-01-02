@@ -13,9 +13,8 @@ export class RoleAccessService {
     ) {}
   
   
-    isGranted(permission: string, resource: string, destroy: Subject<void>) {
-      const switched = this.roleService.getRole().pipe(
-        takeUntil(destroy),
+    isGranted(permission: string, resource: string) {
+      const switched = this.roleService.roleGetCurrent().pipe(
         switchMap(() => this.accessChecker.isGranted(permission, resource)));
       return switched
     }

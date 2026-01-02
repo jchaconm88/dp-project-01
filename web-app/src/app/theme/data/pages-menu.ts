@@ -29,12 +29,12 @@ export const MENU_ITEMS: MenuItem[] = [
       children: [
         {
           title: 'Usuarios',
-          link: '/system/user',
+          link: '/core/user',
           permission: ['view', 'user']
         },
         {
           title: 'Roles',
-          link: '/system/role',
+          link: '/core/role',
           permission: ['view', 'role']
         },
         {

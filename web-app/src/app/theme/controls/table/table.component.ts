@@ -34,15 +34,15 @@ export class TableHeaderDirective {
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
-export class TableComponent implements OnInit {
+export class TableComponent<T extends { id?: string }> implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ContentChildren(PerColumnComponent) columns: QueryList<PerColumnComponent> = new QueryList<PerColumnComponent>();
-  dataSource!: MatTableDataSource<any>
+  dataSource!: MatTableDataSource<T>
   tableColumns!: AppTableDefDetail[]
   displayedColumns!: string[]
   loading: boolean = false
-  selectedRows = new SelectionModel<any>(true, [])
+  selectedRows = new SelectionModel<T>(true, [])
   itemTemplate!: TemplateRef<any>
 
   @Input() tableDef!: AppTableDefDetail[]
@@ -62,9 +62,9 @@ export class TableComponent implements OnInit {
     this.displayOptionsColumn(value)
   }
 
-  @Output() onDetail = new EventEmitter<any>()
-  @Output() onEdit = new EventEmitter<any>()
-  @Output() selectionChange: EventEmitter<SelectionModel<any>> = new EventEmitter<SelectionModel<any>>()
+  @Output() onDetail = new EventEmitter<string>()
+  @Output() onEdit = new EventEmitter<string>()
+  @Output() selectionChange: EventEmitter<SelectionModel<T>> = new EventEmitter<SelectionModel<T>>()
   
   constructor() {
    }
@@ -89,7 +89,7 @@ export class TableComponent implements OnInit {
       if (!value) this.displayedColumns?.splice(index, 1)
     }
     else {
-      if (value) this.displayedColumns?.push('options')
+      if (value) this.displayedColumns?.unshift('options')
     }
   console.log("displayedColumns", this.displayedColumns)
   }
@@ -107,7 +107,7 @@ export class TableComponent implements OnInit {
     this.displaySelectColumn(this._showSelect)
   }
 
-  setDatasource(data: any[]): void {
+  setDatasource(data: T[]): void {
     this.dataSource = new MatTableDataSource(data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -163,10 +163,10 @@ export class TableComponent implements OnInit {
   isNoneAndSendSelected() {
     let isDisabled = false
     isDisabled = this.selectedRows.selected.length > 0? false: true    
-    if (!isDisabled) {
-      let send = this.selectedRows.selected.find(o => o.status != 'CREADO' && o.status != 'RECHAZADA')
-      if (send) isDisabled = true
-    }
+    // if (!isDisabled) {
+    //   let send = this.selectedRows.selected.find(o => o.status != 'CREADO' && o.status != 'RECHAZADA')
+    //   if (send) isDisabled = true
+    // }
     return isDisabled
   }
 
@@ -179,7 +179,7 @@ export class TableComponent implements OnInit {
     this.selectedRows.select(...this.dataSource.data);
   }
 
-  getSelectedRows(): any[] {
+  getSelectedRows(): T[] {
     return this.selectedRows.selected;
   }
 

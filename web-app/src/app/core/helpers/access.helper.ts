@@ -12,7 +12,7 @@ export class AccessHelper {
 
 
   isGranted(permission: string, resource: string, destroy: Subject<void>) {
-    const switched = this.roleService.getRole().pipe(
+    const switched = this.roleService.roleGetCurrent().pipe(
       takeUntil(destroy),
       switchMap(() => this.accessChecker.isGranted(permission, resource)));
     return switched

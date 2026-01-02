@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule} from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { NbButtonModule, NbFormFieldModule, NbIconModule, NbInputModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'dp-content-header',
@@ -18,7 +20,9 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatMenuModule
+    MatMenuModule,
+    ReactiveFormsModule,
+    FormsModule 
   ],
   templateUrl: './content-header.component.html',
   styleUrl: './content-header.component.scss'
@@ -30,11 +34,19 @@ export class ContentHeaderComponent implements OnInit {
   @Output() onLoad = new EventEmitter<any>()
   @Output() onDelete = new EventEmitter<any>()
   @Output() onCreate = new EventEmitter<any>()
+  filterCtrl = new FormControl('');
 
   constructor() { }
 
   ngOnInit(): void {
-  } 
+    this.filterCtrl.valueChanges
+    .pipe(
+      distinctUntilChanged()
+    )
+    .subscribe(value => {
+      this.applyFilter(value ?? '');
+    });
+  }
 
   filterHandler(event: Event) {
     const value = (event.target as HTMLInputElement).value
@@ -52,4 +64,12 @@ export class ContentHeaderComponent implements OnInit {
   createHandler() {
     this.onCreate.emit();
   }
+
+applyFilter(value: string) {
+  this.onFilter.emit(value);
+}
+
+clearFilter(): void {
+  this.filterCtrl.setValue('');
+}
 }

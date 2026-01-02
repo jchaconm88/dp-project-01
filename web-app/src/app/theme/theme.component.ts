@@ -35,7 +35,7 @@ export class ThemeComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     try {
-      this.roleService.getRole()
+      this.roleService.roleGetCurrent()
         .pipe(takeUntil(this.destroy$))
         .subscribe(async role => {
           console.log('Rol detectado en PagesComponent:', role);

@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { NbAuthJWTToken, NbAuthService, NbAuthToken } from '@nebular/auth';
 import { BehaviorSubject, catchError, filter, from, map, of, switchMap, take } from 'rxjs';
 import { FirebaseService } from './firebase.service';
+import { User } from '@core/models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { FirebaseService } from './firebase.service';
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private authService = inject(NbAuthService);
-  private firebaseService = inject(FirebaseService);
+  private firebaseService = inject(FirebaseService<User>);
   private userSubject = new BehaviorSubject<any | null>(null);
   user$ = this.userSubject.asObservable();
 
@@ -45,5 +46,21 @@ export class UserService {
 
   userGet(id: string) {
     return this.firebaseService.getDocument('users', id);
+  }
+
+  userGetList() {
+    return this.firebaseService.getCollection('users');
+  }
+
+  userAdd(user: any) {
+    return this.firebaseService.addDocument('users', user)
+  }
+
+  userEdit(userId: string, user: User) {
+    return this.firebaseService.updateDocument('users', userId, user)
+  }
+
+  userDelete(users: User[]) {
+    return this.firebaseService.deleteMany('users', users);
   }
 }

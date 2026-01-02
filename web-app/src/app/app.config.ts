@@ -1,5 +1,5 @@
 import { ApplicationConfig, importProvidersFrom, Injectable, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, withHashLocation } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
@@ -12,15 +12,15 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
 import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
-import { NbSecurityModule, NbRoleProvider, NbAccessChecker } from '@nebular/security';
+import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { NbFirebasePasswordStrategy } from '@nebular/firebase-auth';
 import { provideHttpClient } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire/compat';
-import { LoginComponent } from './theme/components/login/login.component';
-import { distinctUntilChanged, Observable, of as observableOf, shareReplay, startWith, tap } from 'rxjs';
+import { distinctUntilChanged, Observable, shareReplay } from 'rxjs';
 import { RoleService } from './core/services/role.service';
-import { RegisterComponent } from './theme/components/register/register.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { LoginComponent } from '@theme/pages/login/login.component';
+import { RegisterComponent } from '@theme/pages/register/register.component';
 
 @Injectable({ providedIn: 'root' })
 export class NbSimpleRoleProvider extends NbRoleProvider {
@@ -28,7 +28,7 @@ export class NbSimpleRoleProvider extends NbRoleProvider {
     super();
   }
   getRole(): Observable<string> {
-    return this.roleService.getRole().pipe(
+    return this.roleService.roleGetCurrent().pipe(
       distinctUntilChanged(),
       shareReplay(1)
     );

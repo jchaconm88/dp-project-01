@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UserService } from '@core/services/user.service';
 import { NB_WINDOW_CONTEXT, NbButtonModule, NbWindowRef } from '@nebular/theme';
-import { UserService } from '@system/services/user.service';
 import { ContentFormComponent } from '@theme/controls/content-form/content-form.component';
 import { FormFieldComponent } from '@theme/controls/form-field/form-field.component';
 

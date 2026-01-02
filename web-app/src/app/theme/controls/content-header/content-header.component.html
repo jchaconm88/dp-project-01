@@ -1,20 +1,23 @@
 <div class="content-header">
   <ng-container *ngIf="showFilter">
     <nb-form-field>
-        <nb-icon nbPrefix icon="search-outline" pack="eva"></nb-icon>
-        <input type="text" nbInput (keyup)="filterHandler($event)">
+      <nb-icon nbPrefix icon="search-outline" pack="eva"></nb-icon>
+      <input type="text" nbInput [formControl]="filterCtrl">
+      <button nbSuffix nbButton ghost *ngIf="filterCtrl.value" (click)="clearFilter()" aria-label="Limpiar búsqueda">
+        <nb-icon icon="close-outline" pack="eva"></nb-icon>
+      </button>
     </nb-form-field>
   </ng-container>
   <!--END FILTER-->
   <div class="content-header-options">
     <button nbButton (click)="loadHandler()">
-        <nb-icon icon="refresh-outline"></nb-icon>
+      <nb-icon icon="refresh-outline"></nb-icon>
     </button>
     <button nbButton [disabled]="deleteDisabled" (click)="deleteHandler()">
-        Eliminar
+      Eliminar
     </button>
     <button nbButton (click)="createHandler()">
-        Agregar
+      Agregar
     </button>
   </div>
 </div>

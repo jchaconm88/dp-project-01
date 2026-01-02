@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NbLayoutModule, NbSidebarModule } from '@nebular/theme';
-import { HeaderComponent } from '../../components/header/header.component';
+import { HeaderComponent } from '../../controls/header/header.component';
 
 @Component({
     selector: 'default-layout',

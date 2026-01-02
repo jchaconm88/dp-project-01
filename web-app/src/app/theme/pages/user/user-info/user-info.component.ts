@@ -4,9 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { NbButtonModule, NbCardModule, NbTabsetModule } from '@nebular/theme';
 import { ContentDetailComponent } from '@theme/controls/content-detail/content-detail.component';
-import { UserService } from '@system/services/user.service';
 import { TableComponent } from "@theme/controls/table/table.component";
 import { AppTableDefDetail } from '@theme/models/app-table-def-detail';
+import { UserService } from '@core/services/user.service';
 
 @Component({
   selector: 'app-user-detail',
