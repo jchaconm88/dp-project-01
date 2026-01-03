@@ -72,7 +72,7 @@ export class UserSetComponent implements OnInit {
     try {
       if (this.userFormGroup.valid) {
         this.content.loading = true
-        const formData = this.userFormGroup.value;
+        const formData = this.userFormGroup.getRawValue();
         if (this.userId) {
           this.userService.userEdit(this.userId, formData)
             .subscribe({

@@ -11,12 +11,7 @@ import { AppTableDefDetail } from '@theme/models/app-table-def-detail';
 import { RoleAccessService } from '@core/services/role-access.service';
 import { ContentHeaderComponent } from '@theme/controls/content-header/content-header.component';
 import { UserService } from '@core/services/user.service';
-
-interface User {
-  id: string
-  email: string
-  displayName: number
-}
+import { User } from '@core/models/user.model';
 
 @Component({
   selector: 'app-user',
@@ -72,35 +67,6 @@ export class UserComponent implements OnInit {
         this.content.loading = false;
         this.table.setDatasource(users);
       });
-
-      // this.roleAccessService.isGranted('list', 'user')
-      //   .pipe(takeUntilDestroyed(this.destroyRef))
-      //   .subscribe(canList => {
-      //     if (canList) {
-      //       this.content.showAlert = false
-      //       this.userService.userGetList()
-      //         .pipe(
-      //           takeUntilDestroyed(this.destroyRef),
-      //           catchError(err => {
-      //             this.content.loading = false
-      //             console.error(err);
-      //             this.content.showAlertMessage('No se pudieron cargar los usuarios');
-      //             return of([]);
-      //           }),
-      //           finalize(() => {
-      //             this.content.loading = false
-      //           })
-      //         )
-      //         .subscribe(users => {
-      //           this.table.setDatasource(users)
-      //         });
-      //     }
-      //     else {
-      //       this.content.loading = false
-      //       console.error('Acceso denegado a la lista de usuarios.');
-      //       this.content.showAlertMessage('Acceso denegado a la lista de usuarios.');
-      //     }
-      //   });
 
     } catch (error) {
       this.content.loading = false
